@@ -9,9 +9,17 @@ class Product:
         self.active = True
 
     def get_quantity(self) -> float:
+        """
+        Get quality
+        :return: float
+        """
         return float(self.quantity)
 
     def set_quantity(self, quantity: int):
+        """
+        Set quantity
+        :param quantity: int
+        """
         if quantity < 0:
             raise ValueError("Quantity cannot be negative.")
         self.quantity = quantity
@@ -19,18 +27,37 @@ class Product:
             self.deactivate()
 
     def is_active(self) -> bool:
+        """
+        Check if product is active
+        :return: bool
+        """
         return self.active
 
     def activate(self):
+        """
+        Activate product
+        """
         self.active = True
 
     def deactivate(self):
+        """
+        Deactivate product
+        """
         self.active = False
 
     def show(self) -> str:
+        """
+        Show product
+        :return:
+        """
         return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
 
     def buy(self, quantity: int) -> float:
+        """
+        Buy product
+        :param quantity: int
+        :return: float
+        """
         if quantity <= 0:
             raise ValueError("Quantity to buy must be greater than 0.")
         if quantity > self.quantity:
