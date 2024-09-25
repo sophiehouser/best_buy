@@ -67,3 +67,34 @@ class Product:
         self.set_quantity(self.quantity - quantity)
 
         return total_price
+
+
+class NonStockedProduct(Product):
+    def __init__(self, name: str, price: float):
+        super().__init__(name, price, quantity=1)
+
+    def set_quantity(self, quantity: int):
+        pass
+
+    def buy(self, quantity: int) -> float:
+        return self.price * quantity
+
+    def show(self) -> str:
+        return f"{self.name} - ${self.price:.2f} (Digital Product)"
+
+class LimitedProduct(Product):
+    def __init__(self, name: str, price: float, quantity: int, maximum: int):
+        super().__init__(name, price, quantity)
+        self.maximum = maximum
+
+    def get_maximum(self) -> int:
+        return self.maximum
+
+    def buy(self, quantity: int) -> float:
+        if quantity > self.maximum:
+            raise ValueError(f"You can only purchase up to {self.maximum} of this product per order.")
+        return super().buy(quantity)
+
+    def show(self) -> str:
+        return f"{self.name} - ${self.price:.2f} (Max {self.maximum} per order)"
+

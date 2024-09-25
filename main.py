@@ -50,7 +50,11 @@ def make_order(store_obj: store.Store):
                 if quantity <= 0:
                     print("Quantity must be greater than 0.")
                     continue
-                if quantity > product.get_quantity():
+                if (type(product) is products.LimitedProduct
+                        and quantity > product.get_maximum()):
+                    print(f"You can only order {product.get_maximum()} per order")
+                    continue
+                elif quantity > product.get_quantity() and type(product) is not products.NonStockedProduct:
                     print("Not enough quantity available.")
                     continue
 
@@ -102,12 +106,12 @@ def show_menu(store_obj: store.Store) -> object:
 
 
 def main():
-    product_list = [
-        products.Product("MacBook Air M2", price=1450, quantity=100),
-        products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
-        products.Product("Google Pixel 7", price=500, quantity=250)
-    ]
-
+    product_list = [products.Product("MacBook Air M2", price=1450, quantity=100),
+                    products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
+                    products.Product("Google Pixel 7", price=500, quantity=250),
+                    products.NonStockedProduct("Windows License", price=125),
+                    products.LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
+                    ]
     best_buy = store.Store(product_list)
 
     show_menu(best_buy)
