@@ -21,6 +21,7 @@ def make_order(store_obj: store.Store):
 
     while True:
         print("\n------")
+        print("Press Enter to finish your order.")
         print("Available Products:")
         active_products = store_obj.get_all_products()
 
