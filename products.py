@@ -1,3 +1,6 @@
+import promotion
+
+
 class Product:
     def __init__(self, name: str, price: float, quantity: int):
         if not name or price < 0 or quantity < 0:
@@ -7,6 +10,13 @@ class Product:
         self.price = price
         self.quantity = quantity
         self.active = True
+        self.promotion = None
+
+    def get_promotion(self) -> promotion.Promotion:
+        return self.promotion
+
+    def set_promotion(self, promotion: promotion.Promotion):
+        self.promotion = promotion
 
     def get_quantity(self) -> float:
         """
@@ -50,7 +60,10 @@ class Product:
         Show product
         :return:
         """
-        return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
+        description = f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
+        if self.promotion:
+            description += f", Promotion: {self.promotion.name}"
+        return description
 
     def buy(self, quantity: int) -> float:
         """
@@ -63,7 +76,11 @@ class Product:
         if quantity > self.quantity:
             raise ValueError("Not enough quantity in stock to fulfill the purchase.")
 
-        total_price = self.price * quantity
+        if self.promotion:
+            total_price = self.promotion.apply_promotion(self, quantity)
+        else:
+            total_price = self.price * quantity
+
         self.set_quantity(self.quantity - quantity)
 
         return total_price
@@ -77,10 +94,20 @@ class NonStockedProduct(Product):
         pass
 
     def buy(self, quantity: int) -> float:
-        return self.price * quantity
+        if self.promotion:
+            total_price = self.promotion.apply_promotion(self, quantity)
+        else:
+            total_price = self.price * quantity
+
+        return total_price
 
     def show(self) -> str:
-        return f"{self.name} - ${self.price:.2f} (Digital Product)"
+        description = f"{self.name} - ${self.price:.2f} (Digital Product)"
+        if self.promotion:
+            description += f", Promotion: {self.promotion.name}"
+
+        return description
+
 
 class LimitedProduct(Product):
     def __init__(self, name: str, price: float, quantity: int, maximum: int):
@@ -96,5 +123,9 @@ class LimitedProduct(Product):
         return super().buy(quantity)
 
     def show(self) -> str:
-        return f"{self.name} - ${self.price:.2f} (Max {self.maximum} per order)"
+        description = f"{self.name} - ${self.price:.2f} (Max {self.maximum} per order)"
+        if self.promotion:
+            description += f", Promotion: {self.promotion.name}"
+
+        return description
 
