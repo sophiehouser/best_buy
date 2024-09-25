@@ -50,6 +50,9 @@ def make_order(store_obj: store.Store):
                 if quantity <= 0:
                     print("Quantity must be greater than 0.")
                     continue
+                if quantity > product.get_quantity():
+                    print("Not enough quantity available.")
+                    continue
 
                 shopping_list.append((product, quantity))
                 print("Product added to list!")
